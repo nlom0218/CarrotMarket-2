@@ -7,14 +7,22 @@ const InputPractice = () => {
      "
     >
       <input
-        type="text"
-        placeholder="Search here..."
+        type="email"
+        placeholder="Email address"
         className="w-full rounded-full py-2
          bg-gray-100 pl-5 outline-none ring ring-transparent
-         focus:ring-orange-500 focus:ring-offset-2 transition-shadow
-         placeholder:drop-shadow"
+         focus:ring-green-500 focus:ring-offset-2 transition-shadow
+         placeholder:drop-shadow
+         focus:invalid:ring-red-500 peer"
+        required
       />
-      <button className="bg-black text-white py-2 rounded-full active:scale-95 outline-none transition-transform font-medium md:px-10">
+      <span className="text-red-500 font-medium hidden peer-invalid:block">
+        Email is required.
+      </span>
+      <button
+        className="text-white py-2 rounded-full active:scale-95 outline-none transition-transform font-medium md:px-10
+        bg-gradient-to-tr from-cyan-500 to-purple-400 peer-invalid:from-red-500 peer-invalid:to-purple-500"
+      >
         Search
       </button>
     </div>
