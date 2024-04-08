@@ -1,17 +1,19 @@
+'use client';
+
 import { ComponentPropsWithoutRef } from 'react';
+import { useFormStatus } from 'react-dom';
 
-interface FormButton extends ComponentPropsWithoutRef<'button'> {
-  loading: boolean;
-}
+interface FormButton extends ComponentPropsWithoutRef<'button'> {}
 
-const FromButton = ({ children, loading, ...rest }: FormButton) => {
+const FromButton = ({ children, ...rest }: FormButton) => {
+  const { pending } = useFormStatus();
   return (
     <button
       className="primary-btn h-10 disabled:bg-neutral-400 disabled:text-neutral-300 disabled:cursor-not-allowed"
-      disabled={loading}
+      disabled={pending}
       {...rest}
     >
-      {loading ? 'Loading...' : children}
+      {pending ? 'Loading...' : children}
     </button>
   );
 };
