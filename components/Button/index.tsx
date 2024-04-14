@@ -3,9 +3,9 @@
 import { ComponentPropsWithoutRef } from 'react';
 import { useFormStatus } from 'react-dom';
 
-interface FormButton extends ComponentPropsWithoutRef<'button'> {}
+interface Button extends ComponentPropsWithoutRef<'button'> {}
 
-const FromButton = ({ children, ...rest }: FormButton) => {
+const Button = ({ children, ...rest }: Button) => {
   const { pending } = useFormStatus();
   return (
     <button
@@ -18,4 +18,4 @@ const FromButton = ({ children, ...rest }: FormButton) => {
   );
 };
 
-export default FromButton;
+export default Button;

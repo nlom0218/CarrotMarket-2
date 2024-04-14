@@ -4,7 +4,7 @@ interface FromInput extends ComponentPropsWithoutRef<'input'> {
   errors?: string[];
 }
 
-const FormInput = ({ errors = [], ...rest }: FromInput) => {
+const Input = ({ errors = [], ...rest }: FromInput) => {
   return (
     <div className="flex flex-col gap-2">
       <input
@@ -22,4 +22,4 @@ const FormInput = ({ errors = [], ...rest }: FromInput) => {
   );
 };
 
-export default FormInput;
+export default Input;
