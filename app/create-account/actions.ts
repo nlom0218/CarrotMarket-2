@@ -1,25 +1,21 @@
 'use server';
 
 import { z } from 'zod';
-
-const passwordRegex = new RegExp(
-  /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).+$/
-);
+import {
+  PASSWORD_MIN_LENGTH,
+  PASSWORD_REGEX,
+  PASSWORD_REGEX_ERROR,
+} from '@/libs/constants';
 
 const formSchema = z
   .object({
-    username: z
-      .string()
-      .trim()
-      .min(3, '너무 작아!')
-      .max(10, '너무 길어!')
-      .refine((value) => !value.includes('potato'), 'no potatoes allowed!!'),
+    username: z.string(),
     email: z.string().email(),
     password: z
       .string()
-      .min(4)
-      .regex(passwordRegex, '비밀번호 형식에 맞지 않아요'),
-    confirmPassword: z.string().min(4),
+      .min(PASSWORD_MIN_LENGTH)
+      .regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
+    confirmPassword: z.string().min(PASSWORD_MIN_LENGTH),
   })
   .superRefine(({ password, confirmPassword }, ctx) => {
     ['password', 'confirmPassword'].forEach((key) => {
@@ -27,7 +23,7 @@ const formSchema = z
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: [key],
-          message: '둘이 같지 않어222',
+          message: '둘이 같지 않아요.',
         });
       }
     });
