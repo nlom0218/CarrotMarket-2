@@ -9,19 +9,9 @@ export default function SMSLogin() {
         <h2 className="text-xl">Verify your phone number.</h2>
       </div>
       <form className="flex flex-col gap-3">
-        <FormInput
-          required
-          type="number"
-          placeholder="Phone number"
-          errors={[]}
-        />
-        <FormInput
-          required
-          type="number"
-          placeholder="Verification code"
-          errors={[]}
-        />
-        <FromButton loading={false}>Verify</FromButton>
+        <FormInput required type="number" placeholder="Phone number" />
+        <FormInput required type="number" placeholder="Verification code" />
+        <FromButton>Verify</FromButton>
       </form>
     </div>
   );

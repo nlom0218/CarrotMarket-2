@@ -1,10 +1,10 @@
 import { ComponentPropsWithoutRef } from 'react';
 
 interface FromInput extends ComponentPropsWithoutRef<'input'> {
-  errors: string[];
+  errors?: string[];
 }
 
-const FormInput = ({ errors, ...rest }: FromInput) => {
+const FormInput = ({ errors = [], ...rest }: FromInput) => {
   return (
     <div className="flex flex-col gap-2">
       <input
