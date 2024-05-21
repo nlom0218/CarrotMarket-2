@@ -1,6 +1,7 @@
 'use server';
 
 import { z } from 'zod';
+import bcrypt from 'bcrypt';
 import {
   PASSWORD_MIN_LENGTH,
   PASSWORD_REGEX,
@@ -75,4 +76,19 @@ export const createAccount = async (prevState: any, formData: FormData) => {
   if (!result.success) {
     return result.error.flatten();
   }
+
+  const hashedPassword = await bcrypt.hash(result.data.password, 12);
+
+  const user = await db.user.create({
+    data: {
+      username: result.data.username,
+      email: result.data.email,
+      password: hashedPassword,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  console.log(user);
 };
