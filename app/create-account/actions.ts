@@ -6,11 +6,44 @@ import {
   PASSWORD_REGEX,
   PASSWORD_REGEX_ERROR,
 } from '@/libs/constants';
+import db from '@/libs/db';
+
+const isUniqueUsername = async (username: string) => {
+  const user = await db.user.findUnique({
+    where: {
+      username,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  return !user;
+};
+
+const isUniqueEmail = async (email: string) => {
+  const user = await db.user.findUnique({
+    where: {
+      email,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  return !user;
+};
 
 const formSchema = z
   .object({
-    username: z.string(),
-    email: z.string().email(),
+    username: z
+      .string()
+      .trim()
+      .refine(isUniqueUsername, '이미 존재하는 username입니다.'),
+    email: z
+      .string()
+      .email()
+      .refine(isUniqueEmail, '이미 존재하는 이메일입니다.'),
     password: z
       .string()
       .min(PASSWORD_MIN_LENGTH)
@@ -37,13 +70,9 @@ export const createAccount = async (prevState: any, formData: FormData) => {
     confirmPassword: formData.get('confirmPassword'),
   };
 
-  const result = formSchema.safeParse(data);
+  const result = await formSchema.safeParseAsync(data);
 
   if (!result.success) {
-    console.log('issues', result.error.issues);
-    console.log('flatten', result.error.flatten());
+    return result.error.flatten();
   }
-
-  if (!result.success) return result.error.flatten();
-  else console.log(result.data);
 };
