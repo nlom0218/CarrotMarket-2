@@ -8,9 +8,8 @@ import {
   PASSWORD_REGEX_ERROR,
 } from '@/libs/constants';
 import db from '@/libs/db';
-import { getIronSession } from 'iron-session';
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import getSession from '@/libs/session';
 
 const isUniqueUsername = async (username: string) => {
   const user = await db.user.findUnique({
@@ -93,15 +92,11 @@ export const createAccount = async (prevState: any, formData: FormData) => {
     },
   });
 
-  const cookie = await getIronSession(cookies(), {
-    cookieName: 'user',
-    password: process.env.COOKIE_PASSWORD!,
-  });
+  const session = await getSession();
 
-  // @ts-ignore
-  cookie.id = user.id;
+  session.id = user.id;
 
-  await cookie.save();
+  await session.save();
 
   redirect('/profile');
 };
