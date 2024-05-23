@@ -39,19 +39,55 @@ const isUniqueEmail = async (email: string) => {
 
 const formSchema = z
   .object({
-    username: z
-      .string()
-      .trim()
-      .refine(isUniqueUsername, '이미 존재하는 username입니다.'),
-    email: z
-      .string()
-      .email()
-      .refine(isUniqueEmail, '이미 존재하는 이메일입니다.'),
+    username: z.string().trim(),
+    email: z.string().email(),
     password: z
       .string()
       .min(PASSWORD_MIN_LENGTH)
       .regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
     confirmPassword: z.string().min(PASSWORD_MIN_LENGTH),
+  })
+  .superRefine(async ({ username }, ctx) => {
+    const user = await db.user.findUnique({
+      where: {
+        username,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (user) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: '이미 존재하는 username입니다.',
+        path: ['username'],
+        fatal: true,
+      });
+
+      return z.NEVER;
+    }
+  })
+  .superRefine(async ({ email }, ctx) => {
+    const user = await db.user.findUnique({
+      where: {
+        email,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (user) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: '이미 존재하는 이메일입니다.',
+        path: ['email'],
+        fatal: true,
+      });
+
+      return z.NEVER;
+    }
   })
   .superRefine(({ password, confirmPassword }, ctx) => {
     ['password', 'confirmPassword'].forEach((key) => {
