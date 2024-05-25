@@ -1,12 +1,7 @@
-import { cookies } from 'next/headers';
 import { NextRequest } from 'next/server';
-import getSession from './libs/session';
 
-export async function middleware(request: NextRequest) {
-  const session = await getSession();
-  console.log(session);
+export async function middleware(request: NextRequest) {}
 
-  if (request.nextUrl.pathname === '/profile') {
-    return Response.redirect(new URL('/', request.url));
-  }
-}
+export const config = {
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+};
