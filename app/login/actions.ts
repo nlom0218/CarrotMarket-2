@@ -8,8 +8,8 @@ import {
   PASSWORD_REGEX_ERROR,
 } from '@/libs/constants';
 import db from '@/libs/db';
-import getSession from '@/libs/session';
 import { redirect } from 'next/navigation';
+import { saveIdToSession } from '@/libs/session';
 
 const existEmail = async (email: string) => {
   const user = await db.user.findUnique({
@@ -59,8 +59,6 @@ export const login = async (prevState: any, formData: FormData) => {
     user!.password ?? ''
   );
 
-  console.log(comparePasswordResult);
-
   if (!comparePasswordResult) {
     return {
       fieldErrors: {
@@ -69,10 +67,8 @@ export const login = async (prevState: any, formData: FormData) => {
       },
     };
   }
-  const session = await getSession();
-  session.id = user!.id;
 
-  await session.save();
+  await saveIdToSession(user!.id);
 
   redirect('/profile');
 };

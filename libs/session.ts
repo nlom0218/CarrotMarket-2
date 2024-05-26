@@ -5,9 +5,16 @@ type Cookie = {
   id?: number;
 };
 
-export default async function getSession() {
+export const getSession = async () => {
   return await getIronSession<Cookie>(cookies(), {
     cookieName: 'user',
     password: process.env.COOKIE_PASSWORD!,
   });
-}
+};
+
+export const saveIdToSession = async (id: number) => {
+  const session = await getSession();
+  session.id = id;
+
+  await session.save();
+};

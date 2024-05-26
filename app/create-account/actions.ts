@@ -9,7 +9,7 @@ import {
 } from '@/libs/constants';
 import db from '@/libs/db';
 import { redirect } from 'next/navigation';
-import getSession from '@/libs/session';
+import { saveIdToSession } from '@/libs/session';
 
 const isUniqueUsername = async (username: string) => {
   const user = await db.user.findUnique({
@@ -128,11 +128,7 @@ export const createAccount = async (prevState: any, formData: FormData) => {
     },
   });
 
-  const session = await getSession();
-
-  session.id = user.id;
-
-  await session.save();
+  await saveIdToSession(user.id);
 
   redirect('/profile');
 };

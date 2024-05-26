@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import getSession from './libs/session';
+import { getSession } from './libs/session';
 
 const publicOnlyUrls: Record<string, boolean> = {
   '/': true,
