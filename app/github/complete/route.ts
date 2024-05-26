@@ -33,7 +33,11 @@ export async function GET(request: NextRequest) {
 
   console.log(accessToken);
 
-  const { id, avatar_url, login } = await fetch(`https://api.github.com/user`, {
+  const {
+    id,
+    avatar_url: avatar,
+    login: username,
+  } = await fetch(`https://api.github.com/user`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -57,9 +61,9 @@ export async function GET(request: NextRequest) {
 
   const newUser = await db.user.create({
     data: {
-      username: `${login}-github`,
+      username: `${username}-github`,
       github_id: String(id),
-      avatar: avatar_url,
+      avatar,
     },
   });
 
@@ -67,3 +71,9 @@ export async function GET(request: NextRequest) {
 
   return redirect('/profile');
 }
+
+// code challenge
+// - [x] 로그인 function - 세션id 저장하는 부분
+// - [ ] github username이 이미 존재하는 경우 어떻게 할지? - 추가 작성으로 username을 등록할 수 있도록 유도, 기본값은 username-github
+// - [ ] userEmail
+// - [ ] fetch request 코드 분리
