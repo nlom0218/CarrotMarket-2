@@ -31,8 +31,6 @@ export async function GET(request: NextRequest) {
     return new Response(null, { status: 400 });
   }
 
-  console.log(accessToken);
-
   const {
     id,
     avatar_url: avatar,
