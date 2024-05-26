@@ -7,7 +7,7 @@ export function GET() {
   };
 
   const formattedParams = new URLSearchParams(params).toString();
-  const finalUrl = `${baseURL}?${formattedParams}`;
+  const finalURL = `${baseURL}?${formattedParams}`;
 
-  return Response.redirect(finalUrl);
+  return Response.redirect(finalURL);
 }
