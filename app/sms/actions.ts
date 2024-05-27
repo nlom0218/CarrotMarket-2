@@ -5,6 +5,7 @@ import validator from 'validator';
 import crypto from 'crypto';
 import { redirect } from 'next/navigation';
 import db from '@/libs/db';
+import { saveIdToSession } from '@/libs/session';
 
 type ActionState = {
   token: boolean;
@@ -18,7 +19,24 @@ const phoneSchema = z
     '올바른 번호를 입력해주세요.'
   );
 
-const tokenSchema = z.coerce.number().min(100000).max(999999);
+const existToken = async (token: number) => {
+  const exists = await db.sMSToken.findFirst({
+    where: {
+      token: String(token),
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  return Boolean(exists);
+};
+
+const tokenSchema = z.coerce
+  .number()
+  .min(100000)
+  .max(999999)
+  .refine(existToken, '토큰이 유효하지 않습니다.');
 
 async function createToken() {
   const token = crypto.randomInt(100000, 999999).toString();
@@ -84,7 +102,7 @@ export const smsLogin = async (prevState: ActionState, formData: FormData) => {
     };
   }
 
-  const result = tokenSchema.safeParse(token);
+  const result = await tokenSchema.safeParseAsync(token);
   if (!result.success) {
     return {
       token: true,
@@ -92,5 +110,23 @@ export const smsLogin = async (prevState: ActionState, formData: FormData) => {
     };
   }
 
-  redirect('/');
+  const userToken = await db.sMSToken.findUnique({
+    where: {
+      token: String(result.data),
+    },
+    select: {
+      id: true,
+      userId: true,
+    },
+  });
+
+  await saveIdToSession(userToken!.userId);
+
+  await db.sMSToken.delete({
+    where: {
+      id: userToken!.id,
+    },
+  });
+
+  redirect('/profile');
 };
