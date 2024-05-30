@@ -1,5 +1,6 @@
 'use server';
 
+import twilio from 'twilio';
 import { z } from 'zod';
 import validator from 'validator';
 import crypto from 'crypto';
@@ -95,6 +96,17 @@ export const smsLogin = async (prevState: ActionState, formData: FormData) => {
           },
         },
       },
+    });
+
+    const client = twilio(
+      process.env.TWILIO_ACCOUNT_SID,
+      process.env.TWILIO_AUTH_TOKEN
+    );
+
+    await client.messages.create({
+      body: `당신의 Carrot Market2의 인증 코드는 ${token}입니다.`,
+      from: process.env.TWILIO_PHONE_NUMBER!,
+      to: process.env.MY_PHONE_NUMBER!,
     });
 
     return {
