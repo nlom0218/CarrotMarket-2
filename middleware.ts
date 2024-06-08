@@ -19,7 +19,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (session.id && isPublicUrl) {
-    return NextResponse.redirect(new URL('/home', request.url));
+    return NextResponse.redirect(new URL('/products', request.url));
   }
 }
 
