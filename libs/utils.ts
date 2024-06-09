@@ -10,5 +10,7 @@ export const formatToTimeAgo = (date: string) => {
 
   const diff = Math.round((time - now) / dayInMs);
 
+  if (diff === 0) return '오늘';
+
   return formatter.format(diff, 'days');
 };
