@@ -12,13 +12,19 @@ type Props = {
 
 export default function ProductList({ initialProducts }: Props) {
   const [page, setPage] = useState(1);
+  const [isLastPage, setIsLastPage] = useState(false);
   const [products, setProducts] = useState(initialProducts);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleClickButton = async () => {
     setIsLoading(true);
-    setPage((prev) => prev + 1);
     const newProducts = await getMoreProducts(page + 1);
+
+    if (newProducts.length !== 0) {
+      setPage((prev) => prev + 1);
+    } else {
+      setIsLastPage(true);
+    }
 
     setProducts((prev) => [...prev, ...newProducts]);
     setIsLoading(false);
@@ -29,9 +35,13 @@ export default function ProductList({ initialProducts }: Props) {
       {products.map((product) => (
         <Product key={product.id} product={product} />
       ))}
-      <Button onClick={handleClickButton}>
-        {isLoading ? '로딩중' : '더보기'}
-      </Button>
+      {isLastPage ? (
+        <div className="flex justify-center">상품이 없습니다.</div>
+      ) : (
+        <Button onClick={handleClickButton}>
+          {isLoading ? '로딩중' : '더보기'}
+        </Button>
+      )}
     </div>
   );
 }
